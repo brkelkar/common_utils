@@ -45,6 +45,13 @@ func Info(msg string, tags ...zap.Field) {
 
 }
 
+// Debug log level debug message
+func Debug(msg string, tags ...zap.Field) {
+	log.Debug(msg, tags...)
+	log.Sync()
+
+}
+
 // Error level debug message
 func Error(msg string, err error, tags ...zap.Field) {
 	if err != nil {
