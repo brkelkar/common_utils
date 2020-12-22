@@ -17,6 +17,8 @@ type Config struct {
 		Host string `yaml:"host", envconfig:"SERVER_HOST"`
 	} `yaml:"server"`
 	Database struct {
+		Port     string `yaml:"port", envconfig:"DB_PORT"`
+		Host     string `yaml:"host", envconfig:"DB_HOST"`
 		Username string `yaml:"user", envconfig:"DB_USERNAME"`
 		Password string `yaml:"pass", envconfig:"DB_PASSWORD"`
 		DBName   string `yaml:"database_name", envconfig:"DB_NAME"`
