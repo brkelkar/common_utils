@@ -8,7 +8,7 @@ import (
 )
 
 //DB used as cursor for database connection
-var DB *gorm.DB
+var DB map[string]*gorm.DB
 
 // DBConfig represents db configuration
 type DBConfig struct {

@@ -13,16 +13,22 @@ import (
 //Incase of both eviroment variables overwrites .yml file variables
 type Config struct {
 	Server struct {
-		Port string `yaml:"port", envconfig:"SERVER_PORT"`
+		Port int    `yaml:"port", envconfig:"SERVER_PORT"`
 		Host string `yaml:"host", envconfig:"SERVER_HOST"`
 	} `yaml:"server"`
-	Database struct {
-		Port     string `yaml:"port", envconfig:"DB_PORT"`
+
+	DatabaseName struct {
+		AwacsDBName         string `yaml:"acawsDBName", envconfig:"AWACS_DB"`
+		AwacsSmartDBName    string `yaml:"acawsSmartDBName", envconfig:"AWACS_SMART_DB"`
+		SmartStockistDBName string `yaml:"smartStockistDBName", envconfig:"AWACS_SMART_STOCKIST_DB"`
+	} `yaml:"databaseName"`
+
+	DatabaseConfig struct {
+		Port     int    `yaml:"port", envconfig:"DB_PORT"`
 		Host     string `yaml:"host", envconfig:"DB_HOST"`
 		Username string `yaml:"user", envconfig:"DB_USERNAME"`
 		Password string `yaml:"pass", envconfig:"DB_PASSWORD"`
-		DBName   string `yaml:"database_name", envconfig:"DB_NAME"`
-	} `yaml:"database"`
+	} `yaml:"databaseConfig"`
 }
 
 func processError(err error) {
