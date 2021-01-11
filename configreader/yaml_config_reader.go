@@ -2,9 +2,9 @@ package configreader
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/brkelkar/common_utils/logger"
-	"github.com/kelseyhightower/envconfig"
 	"gopkg.in/yaml.v2"
 )
 
@@ -31,6 +31,8 @@ type Config struct {
 	} `yaml:"databaseConfig"`
 }
 
+var m = make(map[string]string)
+
 func processError(err error) {
 	logger.Error("Error while reading config", err)
 	os.Exit(2)
@@ -54,9 +56,47 @@ func (cfg *Config) ReadFile(fileName string) {
 
 //ReadEnv reads enviroment variables
 //and loads into config object
-func (cfg *Config) ReadEnv() {
-	err := envconfig.Process("", cfg)
-	if err != nil {
-		processError(err)
+func (cfg *Config) ReadEnv(envObj []string) map[string]string {
+	for _, element := range envObj {
+		val, present := os.LookupEnv(element)
+		if present == true {
+			m[element] = val
+		}
+	}
+
+	return m
+}
+
+//MapEnv enviroment variables
+//and loads into config object
+func (cfg *Config) MapEnv(m map[string]string) {
+
+	for key, val := range m {
+		switch key {
+		case "SERVER_HOST":
+			cfg.Server.Host = val
+		case "SERVER_PORT":
+			port, err := strconv.Atoi(val)
+			if err == nil {
+				cfg.Server.Port = port
+			}
+		case "AWACS_DB":
+			cfg.DatabaseName.AwacsDBName = val
+		case "AWACS_SMART_DB":
+			cfg.DatabaseName.AwacsSmartDBName = val
+		case "AWACS_SMART_STOCKIST_DB":
+			cfg.DatabaseName.SmartStockistDBName = val
+		case "DB_PORT":
+			port, err := strconv.Atoi(val)
+			if err == nil {
+				cfg.DatabaseConfig.Port = port
+			}
+		case "DB_HOST":
+			cfg.DatabaseConfig.Host = val
+		case "DB_USERNAME":
+			cfg.DatabaseConfig.Username = val
+		case "DB_PASSWORD":
+			cfg.DatabaseConfig.Password = val
+		}
 	}
 }
