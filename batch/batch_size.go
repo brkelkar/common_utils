@@ -2,6 +2,7 @@ package utils
 
 import "reflect"
 
+//GetBatchSize get count of exicution query
 func GetBatchSize(i interface{}) int {
 
 	v := reflect.ValueOf(i)
