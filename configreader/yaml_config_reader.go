@@ -70,7 +70,6 @@ func (cfg *Config) ReadEnv(envObj []string) map[string]string {
 //MapEnv enviroment variables
 //and loads into config object
 func (cfg *Config) MapEnv(m map[string]string) {
-
 	for key, val := range m {
 		switch key {
 		case "SERVER_HOST":
