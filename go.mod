@@ -10,5 +10,6 @@ require (
 	golang.org/x/tools v0.0.0-20200918232735-d647fc253266
 	google.golang.org/appengine v1.6.6
 	gopkg.in/yaml.v2 v2.2.2
+	gorm.io/driver/sqlserver v1.0.5
 	gorm.io/gorm v1.20.8
 )
