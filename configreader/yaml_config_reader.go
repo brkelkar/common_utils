@@ -1,9 +1,11 @@
 package configreader
 
 import (
+	"errors"
 	"os"
 	"strconv"
 
+	gc "github.com/brkelkar/common_utils/gcsbucketclient"
 	"github.com/brkelkar/common_utils/logger"
 	"gopkg.in/yaml.v2"
 )
@@ -48,6 +50,26 @@ func (cfg *Config) ReadFile(fileName string) {
 	defer f.Close()
 
 	decoder := yaml.NewDecoder(f)
+	err = decoder.Decode(cfg)
+	if err != nil {
+		processError(err)
+	}
+}
+
+//ReadGcsFile reads given config file
+//and loads into config object
+func (cfg *Config) ReadGcsFile(filePath string) {
+	bucketName, fileName, err := gc.GetBucketAndFileName(filePath)
+	if err != nil {
+		processError(err)
+	}
+	var gcsObj gc.GcsBucketClient
+	gcsClient := gcsObj.InitClient().SetBucketName(bucketName).SetNewReader(fileName)
+	if !gcsClient.GetLastStatus() {
+		processError(errors.New("Error while reading file from GCS for filepath=" + filePath))
+	}
+
+	decoder := yaml.NewDecoder(gcsClient.GetReader())
 	err = decoder.Decode(cfg)
 	if err != nil {
 		processError(err)
