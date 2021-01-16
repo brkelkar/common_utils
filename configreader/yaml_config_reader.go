@@ -31,6 +31,11 @@ type Config struct {
 		Username string `yaml:"user", envconfig:"DB_USERNAME"`
 		Password string `yaml:"pass", envconfig:"DB_PASSWORD"`
 	} `yaml:"databaseConfig"`
+
+	GrpcConfig struct {
+		Port int    `yaml:"port", envconfig:"GRPC_PORT"`
+		Host string `yaml:"host", envconfig:"GCPC_HOST"`
+	} `yaml:"grpcConfig"`
 }
 
 var m = make(map[string]string)
@@ -118,6 +123,15 @@ func (cfg *Config) MapEnv(m map[string]string) {
 			cfg.DatabaseConfig.Username = val
 		case "DB_PASSWORD":
 			cfg.DatabaseConfig.Password = val
+
+		case "GRPC_HOST":
+			cfg.GrpcConfig.Host = val
+		case "GRPC_PORT":
+			port, err := strconv.Atoi(val)
+			if err == nil {
+				cfg.GrpcConfig.Port = port
+			}
+
 		}
 	}
 }
