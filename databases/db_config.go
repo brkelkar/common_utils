@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	cr "github.com/brkelkar/common_utils/configreader"
 	"github.com/brkelkar/common_utils/logger"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
-
-	cr "github.com/brkelkar/common_utils/configreader"
 )
 
 //DB used as cursor for database connection
@@ -40,6 +39,13 @@ func BuildDBMsSQLConfig(host string, port int, user string, dbName string, passw
 
 // DbMsSQLURL Create database connetion url
 func DbMsSQLURL(dbConfig *DBConfig) string {
+	fmt.Printf("sqlserver://%s:%s@%s:%d?database=%s",
+		dbConfig.User,
+		dbConfig.Password,
+		dbConfig.Host,
+		dbConfig.Port,
+		dbConfig.DBName)
+
 	return fmt.Sprintf(
 		"sqlserver://%s:%s@%s:%d?database=%s",
 		dbConfig.User,
@@ -52,7 +58,7 @@ func DbMsSQLURL(dbConfig *DBConfig) string {
 
 // DbMySQLURL Create database connetion url
 func DbMySQLURL(dbConfig *DBConfig) string {
-	return fmt.Sprintf(
+	st := fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
 		dbConfig.User,
 		dbConfig.Password,
@@ -60,6 +66,8 @@ func DbMySQLURL(dbConfig *DBConfig) string {
 		dbConfig.Port,
 		dbConfig.DBName,
 	)
+	fmt.Println(st)
+	return st
 }
 
 //DbObj Dumy obect
@@ -88,7 +96,9 @@ func (d *DbObj) GetConnection(dbName string, cfg cr.Config) (dbPtr *gorm.DB, err
 		cfg.DatabaseConfig.Password,
 	)
 
-	dbPtr, err = gorm.Open(sqlserver.Open(DbMsSQLURL(dbConfig)), &gorm.Config{})
+	dbPtr, err = gorm.Open(sqlserver.Open(DbMsSQLURL(dbConfig)), &gorm.Config{
+		PrepareStmt: true,
+	})
 	return
 }
 
