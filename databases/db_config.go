@@ -8,6 +8,7 @@ import (
 	"github.com/brkelkar/common_utils/logger"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
+	log "gorm.io/gorm/logger"
 )
 
 //DB used as cursor for database connection
@@ -98,6 +99,7 @@ func (d *DbObj) GetConnection(dbName string, cfg cr.Config) (dbPtr *gorm.DB, err
 
 	dbPtr, err = gorm.Open(sqlserver.Open(DbMsSQLURL(dbConfig)), &gorm.Config{
 		PrepareStmt: true,
+		Logger:      log.Default.LogMode(log.Silent),
 	})
 	return
 }
@@ -110,10 +112,10 @@ func (d *DbObj) CreateConnectionPool(dbPrt *gorm.DB, maxIdelConnections int, max
 		logger.Error("Cannot creat connection pool", err)
 	}
 	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
-	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxIdleConns(maxIdelConnections)
 
 	// SetMaxOpenConns sets the maximum number of open connections to the database.
-	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxOpenConns(maxConnetions)
 
 	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
 	sqlDB.SetConnMaxLifetime(timeOutInMinutes * time.Minute)
